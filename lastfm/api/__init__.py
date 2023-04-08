@@ -1,7 +1,7 @@
 import aiohttp
 from typing import Optional, Dict
 from lastfm.api.user import LastFMUser
-from lastfm.exceptions import LastFMError
+from lastfm.exceptions import get_error
 
 
 FM = type["LastFMAPI"]
@@ -24,11 +24,10 @@ class LastFMAPI:
                 return await response.json()
 
             error_data = await response.json()
-            error_code = int(error_data.get("error"))
-            error_message = error_data.get("message", "")
 
-            error_class = LastFMError.get_error_class(error_code)
-            raise error_class(error_code, error_message)
+            raise (get_error(int(error_data.get("error"))))(
+                int(error_data.get("error")), error_data.get("message", "")
+            )
 
     async def _make_request(self, params: Dict[str, str]) -> Optional[Dict]:
         params = {"api_key": self.api_key, "format": "json", **params}

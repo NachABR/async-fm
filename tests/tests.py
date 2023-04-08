@@ -16,17 +16,10 @@ async def main():
     today = datetime.datetime.now().date()
     week = today - datetime.timedelta(weeks=1)
 
-    await fm.user.get_weekly_album_chart(
-        username=test, from_date=week, to_date=today
-    )
-    await fm.user.get_weekly_track_chart(
-        username=test, from_date=today, to_date=week
-    )
-    await fm.user.get_weekly_artist_chart(
-        username=test, from_date=week, to_date=today
-    )
+    await fm.user.get_weekly_album_chart(username=test, from_date=week, to_date=today)
+    await fm.user.get_weekly_track_chart(username=test, from_date=today, to_date=week)
+    await fm.user.get_weekly_artist_chart(username=test, from_date=week, to_date=today)
     await fm.user.get_top_tags(username=test)
-    
 
 
 time = timeit.timeit(lambda: asyncio.run(main()), number=10)

@@ -76,16 +76,19 @@ class LastFMUser:
 
         if recent_tracks := data.get("recenttracks"):
             return APIResponse(
-                data=[
-                    Track(
-                        artist=track["artist"]["#text"],
-                        title=track["name"],
-                        album=track["album"]["#text"],
-                        images=get_images_(track.get("image")),
-                        now_playing="@attr" in track and "nowplaying" in track["@attr"],
+                data=list(
+                    map(
+                        lambda track: Track(
+                            artist=track["artist"]["#text"],
+                            title=track["name"],
+                            album=track["album"]["#text"],
+                            images=get_images_(track.get("image")),
+                            now_playing="@attr" in track
+                            and "nowplaying" in track["@attr"],
+                        ),
+                        recent_tracks["track"],
                     )
-                    for track in recent_tracks["track"]
-                ],
+                ),
                 total=recent_tracks.get("@attr", {}).get("total"),
             )
         return None
@@ -119,15 +122,17 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
         if artists := data.get("topartists"):
             return APIResponse(
-                data=[
-                    Artist(
-                        name=artist["name"],
-                        images=get_images_(artist.get("image")),
-                        playcount=artist["playcount"],
-                        rank=artist["@attr"]["rank"],
+                data=list(
+                    map(
+                        lambda artist: Artist(
+                            name=artist["name"],
+                            images=get_images_(artist.get("image")),
+                            playcount=artist["playcount"],
+                            rank=artist["@attr"]["rank"],
+                        ),
+                        artists["artist"],
                     )
-                    for artist in artists["artist"]
-                ],
+                ),
                 total=artists.get("@attr").get("total"),
             )
         return None
@@ -156,16 +161,18 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
         if albums := data.get("topalbums"):
             return APIResponse(
-                data=[
-                    Album(
-                        artist=album["artist"]["name"],
-                        title=album["name"],
-                        images=get_images_(album.get("image")),
-                        playcount=album["playcount"],
-                        rank=album["@attr"]["rank"],
+                data=list(
+                    map(
+                        lambda album: Album(
+                            artist=album["artist"]["name"],
+                            title=album["name"],
+                            images=get_images_(album.get("image")),
+                            playcount=album["playcount"],
+                            rank=album["@attr"]["rank"],
+                        ),
+                        albums["album"],
                     )
-                    for album in albums["album"]
-                ],
+                ),
                 total=albums.get("@attr").get("total"),
             )
         return None
@@ -273,16 +280,18 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklyartistchart"):
             return APIResponse(
-                data=[
-                    Artist(
-                        name=artist["name"],
-                        playcount=artist["playcount"],
-                        images=get_images_(images=images)
-                        if (images := artist.get("image"))
-                        else None,
+                data=list(
+                    map(
+                        lambda artist: Artist(
+                            name=artist["name"],
+                            playcount=artist["playcount"],
+                            images=get_images_(images=images)
+                            if (images := artist.get("image"))
+                            else None,
+                        ),
+                        weekly_chart["artist"],
                     )
-                    for artist in weekly_chart["artist"]
-                ],
+                ),
                 total=len(weekly_chart["artist"]),
             )
         return None
@@ -317,18 +326,20 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklyalbumchart"):
             return APIResponse(
-                data=[
-                    Album(
-                        artist=album["artist"]["#text"],
-                        title=album["name"],
-                        images=get_images_(images=images)
-                        if (images := album.get("image"))
-                        else None,
-                        rank=album["@attr"]["rank"],
-                        playcount=album["playcount"],
+                data=list(
+                    map(
+                        lambda album: Album(
+                            artist=album["artist"]["#text"],
+                            title=album["name"],
+                            images=get_images_(images=images)
+                            if (images := album.get("image"))
+                            else None,
+                            rank=album["@attr"]["rank"],
+                            playcount=album["playcount"],
+                        ),
+                        weekly_chart["album"],
                     )
-                    for album in weekly_chart["album"]
-                ],
+                ),
                 total=len(weekly_chart["album"]),
             )
         return None
@@ -363,16 +374,18 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklytrackchart"):
             return APIResponse(
-                data=[
-                    Track(
-                        artist=track["artist"]["#text"],
-                        title=track["name"],
-                        images=get_images_(track.get("image")),
-                        rank=track["@attr"]["rank"],
-                        playcount=track["playcount"],
+                data=list(
+                    map(
+                        lambda track: Track(
+                            artist=track["artist"]["#text"],
+                            title=track["name"],
+                            images=get_images_(track.get("image")),
+                            rank=track["@attr"]["rank"],
+                            playcount=track["playcount"],
+                        ),
+                        weekly_chart["track"],
                     )
-                    for track in weekly_chart["track"]
-                ],
+                ),
                 total=len(weekly_chart["track"]),
             )
         return None
