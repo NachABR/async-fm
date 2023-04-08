@@ -1,15 +1,17 @@
 import pathlib
 from setuptools import setup
+from lastfm import __version__
 
 long_description = pathlib.Path("./README.md").read_text()
 
 setup(
     name="aio-lastfm",
-    version="0.0.1",
+    version=__version__,
     description="Python library for interacting with the Last.fm API asynchronously.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/NachABR/aio-lastfm",
+    download_url=f"https://github.com/NachABR/aio-lastfm/archive/refs/tags/v{__version__}.tar.gz",
     author="NachABR",
     author_email="nachabr@protonmail.com",
     license="MIT",
