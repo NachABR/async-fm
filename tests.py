@@ -2,7 +2,7 @@ import asyncio, timeit
 import datetime
 from lastfm.api import LastFMAPI
 
-fm = LastFMAPI(api_key="972b6916be3c9598a8aae44b15fa3267")
+fm = LastFMAPI(api_key="API_KEY")
 
 
 async def main():
