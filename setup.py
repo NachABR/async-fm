@@ -1,6 +1,6 @@
 import pathlib
 from setuptools import setup
-from lastfm import __version__
+from src.lastfm import __version__
 
 long_description = pathlib.Path("./README.md").read_text()
 
