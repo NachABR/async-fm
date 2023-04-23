@@ -1,11 +1,11 @@
-# aio-lastfm
+# AsyncFM
 
 Python library for interacting with the Last.fm API asynchronously.
 
 ## Installation
 
 ```bash
-pip install aio-lastfm
+pip install async-fm
 ```
 
 # Usage
@@ -14,9 +14,9 @@ First, you need to obtain an API key and secret from Last.fm. You can do this by
 
 ```python
 import asyncio
-import lastfm
+import asyncfm
 
-lastfm = lastfm.LastFMAPI(api_key="api_key_here")
+lastfm = asyncfm.LastFMAPI(api_key="api_key_here")
 
 
 async def main():
@@ -45,8 +45,8 @@ Contributions are welcome! Please open an issue or submit a pull request if you 
 We currently don't have any tests for this library, but we'd love your help in adding some! If you're interested in contributing, here's what you can do:
 
 - Fork the repo
-- Install the development dependencies by running: `pip install -r requirements-dev.txt`.
-- Write your tests in `aio-lastfm/tests` directory
+- Install the dependencies by running: `poetry install`.
+- Write your tests in `tests` directory
 - Run the tests with pytest
 - Submit a pull request with your changes
 

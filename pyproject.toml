@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "aio-lastfm"
+name = "Async-FM"
 version = "0.0.1"
 description = "Python library for interacting with the Last.fm API asynchronously."
 authors = ["NachABR <nachabr@protonmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [{include = "src"}]
-homepage = "https://github.com/NachABR/aio-lastfm"
-repository = "https://github.com/NachABR/aio-lastfm.git"
-keywords = ["python", "lastfm", "aiohttp"]
+homepage = "https://github.com/NachABR/async-fm"
+repository = "https://github.com/NachABR/async-fm.git"
+keywords = ["python", "lastfm", "aiohttp", "async"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
