@@ -1,7 +1,7 @@
 import aiohttp
 from typing import Optional, Dict
-from lastfm.api.user import LastFMUser
-from lastfm.exceptions import get_error
+from asyncfm.api.user import LastFMUser
+from asyncfm.exceptions import get_error
 
 
 FM = type["LastFMAPI"]

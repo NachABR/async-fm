@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from lastfm import api
-from lastfm.types import Album, APIResponse, Artist, Tag, Track, User
-from lastfm.utils import get_images_
+from asyncfm import api
+from asyncfm.types import Album, APIResponse, Artist, Tag, Track, User
+from asyncfm.utils import get_images_
 
 
 class LastFMUser:

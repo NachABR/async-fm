@@ -1,5 +1,5 @@
 from typing import List, Dict
-from lastfm.types import Image
+from asyncfm.types import Image
 
 # internt utility
 def get_images_(images: List[Dict]):
