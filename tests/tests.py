@@ -1,6 +1,6 @@
 import asyncio, timeit
 import datetime
-from lastfm.api import LastFMAPI
+from asyncfm.api import LastFMAPI
 
 fm = LastFMAPI(api_key="API_KEY")
 

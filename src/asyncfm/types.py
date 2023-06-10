@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List, Union
+from typing import Optional, List
 from pydantic import BaseModel
 
 
@@ -63,6 +63,19 @@ class Tag(BaseModel):
     url: str
 
 
-class APIResponse(BaseModel):
-    data: Optional[List[Union["Album", "Artist", "Track", "Tag"]]]
-    total: int
+class Responses:
+    class Tracks(BaseModel):
+        tracks: List[Track]
+        total: int
+
+    class Artists(BaseModel):
+        artists: List[Artist]
+        total: int
+
+    class Albums(BaseModel):
+        albums: List[Album]
+        total: int
+
+    class Tags(BaseModel):
+        tags: List[Tag]
+        total: int

@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import Optional
 
 from asyncfm import api
-from asyncfm.types import Album, APIResponse, Artist, Tag, Track, User
+from asyncfm.types import Album, Responses, Artist, Tag, Track, User
 from asyncfm.utils import get_images_
 
 
 class LastFMUser:
-    def __init__(self, api: "api.FM"):
+    def __init__(self, api: "api.LastFMAPI"):
         self.api = api
 
     async def get_info(self, username: str):
@@ -17,25 +17,25 @@ class LastFMUser:
         }
         data = await self.api._make_request(params=params)
 
-        user_data = data["user"]
-        return User(
-            name=user_data["name"],
-            age=user_data.get("age"),
-            subscriber=user_data.get("subscriber"),
-            realname=user_data.get("realname"),
-            bootstrap=user_data.get("bootstrap"),
-            playcount=user_data.get("playcount"),
-            artist_count=user_data.get("artist_count"),
-            playlists=user_data.get("playlists"),
-            track_count=user_data.get("track_count"),
-            album_count=user_data.get("album_count"),
-            image=get_images_(user_data.get("image")),
-            registered=datetime.fromtimestamp(int(user_data["registered"]["unixtime"])),
-            country=user_data.get("country"),
-            gender=user_data.get("gender"),
-            url=user_data.get("url"),
-            type=user_data.get("type"),
-        )
+        if user_data := data.get("user"):
+            return User(
+                name=user_data["name"],
+                age=user_data.get("age"),
+                subscriber=user_data.get("subscriber"),
+                realname=user_data.get("realname"),
+                bootstrap=user_data.get("bootstrap"),
+                playcount=user_data.get("playcount"),
+                artist_count=user_data.get("artist_count"),
+                playlists=user_data.get("playlists"),
+                track_count=user_data.get("track_count"),
+                album_count=user_data.get("album_count"),
+                image=get_images_(user_data.get("image")),
+                registered=datetime.fromtimestamp(user_data["registered"]["unixtime"]),
+                country=user_data.get("country"),
+                gender=user_data.get("gender"),
+                url=user_data.get("url"),
+                type=user_data.get("type"),
+            )
 
     async def get_recent_tracks(
         self,
@@ -45,7 +45,7 @@ class LastFMUser:
         extended: bool = False,
         from_time: int = None,
         to_time: int = None,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Tracks"]:
         """
         Fetches the recent tracks of a Last.fm user.
 
@@ -75,7 +75,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if recent_tracks := data.get("recenttracks"):
-            return APIResponse(
+            return Responses.Tracks(
                 data=list(
                     map(
                         lambda track: Track(
@@ -91,7 +91,6 @@ class LastFMUser:
                 ),
                 total=recent_tracks.get("@attr", {}).get("total"),
             )
-        return None
 
     async def get_top_artists(
         self,
@@ -99,7 +98,7 @@ class LastFMUser:
         period: str = "overall",
         limit: int = 5,
         page: int = 1,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Artists"]:
         """
         Fetches the top artists for a Last.fm user.
 
@@ -121,7 +120,7 @@ class LastFMUser:
         }
         data = await self.api._make_request(params=params)
         if artists := data.get("topartists"):
-            return APIResponse(
+            return Responses.Artists(
                 data=list(
                     map(
                         lambda artist: Artist(
@@ -135,11 +134,10 @@ class LastFMUser:
                 ),
                 total=artists.get("@attr").get("total"),
             )
-        return None
 
     async def get_top_albums(
         self, username: str, period: str = "overall", limit: int = 5, page: int = 1
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Albums"]:
         """
         Fetches the top albums for a Last.fm user.
 
@@ -160,7 +158,7 @@ class LastFMUser:
         }
         data = await self.api._make_request(params=params)
         if albums := data.get("topalbums"):
-            return APIResponse(
+            return Responses.Albums(
                 data=list(
                     map(
                         lambda album: Album(
@@ -175,7 +173,6 @@ class LastFMUser:
                 ),
                 total=albums.get("@attr").get("total"),
             )
-        return None
 
     async def get_top_tracks(
         self,
@@ -183,7 +180,7 @@ class LastFMUser:
         period: str = "overall",
         limit: int = 5,
         page: int = 1,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Tracks"]:
         """
         Fetches the top tracks for a Last.fm user.
 
@@ -207,7 +204,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if top_tracks := data.get("toptracks"):
-            return APIResponse(
+            return Responses.Tracks(
                 data=[
                     Track(
                         artist=track["artist"]["name"],
@@ -218,14 +215,13 @@ class LastFMUser:
                 ],
                 total=top_tracks.get("@attr", {}).get("total"),
             )
-        return None
 
     async def get_top_tags(
         self,
         username: str,
         limit: int = 5,
         page: int = 1,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Tags"]:
         """
         Fetches the top tags for a Last.fm user.
 
@@ -247,18 +243,17 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if top_tags := data.get("toptags"):
-            return APIResponse(
+            return Responses.Tags(
                 data=[Tag(**tag) for tag in top_tags["tag"]],
                 total=len(top_tags["tag"]),
             )
-        return None
 
     async def get_weekly_artist_chart(
         self,
         username: str,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Artists"]:
         """
         Get the Last.fm chart of top artists for a given week.
 
@@ -279,7 +274,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if weekly_chart := data.get("weeklyartistchart"):
-            return APIResponse(
+            return Responses.Tracks(
                 data=list(
                     map(
                         lambda artist: Artist(
@@ -294,14 +289,13 @@ class LastFMUser:
                 ),
                 total=len(weekly_chart["artist"]),
             )
-        return None
 
     async def get_weekly_album_chart(
         self,
         username: str,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Albums"]:
         """
         Get the Last.fm chart of top albums for a given week.
 
@@ -325,7 +319,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if weekly_chart := data.get("weeklyalbumchart"):
-            return APIResponse(
+            return Responses.Albums(
                 data=list(
                     map(
                         lambda album: Album(
@@ -342,14 +336,13 @@ class LastFMUser:
                 ),
                 total=len(weekly_chart["album"]),
             )
-        return None
 
     async def get_weekly_track_chart(
         self,
         username: str,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
-    ) -> Optional["APIResponse"]:
+    ) -> Optional["Responses.Tracks"]:
         """
         Fetches the weekly track chart for a Last.fm user.
 
@@ -373,7 +366,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if weekly_chart := data.get("weeklytrackchart"):
-            return APIResponse(
+            return Responses.Tracks(
                 data=list(
                     map(
                         lambda track: Track(
@@ -388,4 +381,3 @@ class LastFMUser:
                 ),
                 total=len(weekly_chart["track"]),
             )
-        return None

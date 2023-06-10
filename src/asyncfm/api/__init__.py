@@ -4,9 +4,6 @@ from asyncfm.api.user import LastFMUser
 from asyncfm.exceptions import get_error
 
 
-FM = type["LastFMAPI"]
-
-
 class LastFMAPI:
     def __init__(
         self,
@@ -15,19 +12,19 @@ class LastFMAPI:
     ):
         self.api_key = api_key
         self.base_url = "http://ws.audioscrobbler.com/2.0/"
-        self.user = LastFMUser(api=self)
         self.session = session
+
+        self.user = LastFMUser(api=self)
 
     async def _request(self, session: "aiohttp.ClientSession", params: Dict[str, str]):
         async with session.get(url=self.base_url, params=params) as response:
+            data = await response.json()
             if response.status == 200:
-                return await response.json()
+                return data
 
-            error_data = await response.json()
+            error_code, error_message = data.get("error"), data.get("message")
 
-            raise (get_error(int(error_data.get("error"))))(
-                int(error_data.get("error")), error_data.get("message", "")
-            )
+            raise get_error(code=error_code)(code=error_code, message=error_message)
 
     async def _make_request(self, params: Dict[str, str]) -> Optional[Dict]:
         params = {"api_key": self.api_key, "format": "json", **params}

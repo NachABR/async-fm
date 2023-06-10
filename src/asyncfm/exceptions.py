@@ -1,7 +1,7 @@
 class FMError(Exception):
     def __init__(self, code: int, message: str):
         self.code = code
-        self.message = message.split(" - ", 1)[1]
+        self.message = message
         super().__init__(self.message)
 
 
@@ -77,7 +77,7 @@ class TrialExpiredError(FMError):
     pass
 
 
-class NotExistError(FMError):
+class IgnoredError(FMError):
     pass
 
 
@@ -133,7 +133,7 @@ def get_error(code: int):
         16: ServiceUnavailableError,
         17: LoginError,
         18: TrialExpiredError,
-        19: NotExistError,
+        19: IgnoredError,
         20: NotEnoughContentError,
         21: NotEnoughMembersError,
         22: NotEnoughFansError,
