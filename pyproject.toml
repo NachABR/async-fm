@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Async-FM"
-version = "0.0.4"
+version = "0.0.5"
 description = "Python library for interacting with the Last.fm API asynchronously."
 authors = ["NachABR <nachabr@protonmail.com>"]
 license = "MIT"

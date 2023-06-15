@@ -76,7 +76,7 @@ class LastFMUser:
 
         if recent_tracks := data.get("recenttracks"):
             return Responses.Tracks(
-                data=list(
+                tracks=list(
                     map(
                         lambda track: Track(
                             artist=track["artist"]["#text"],
@@ -121,7 +121,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
         if artists := data.get("topartists"):
             return Responses.Artists(
-                data=list(
+                artists=list(
                     map(
                         lambda artist: Artist(
                             name=artist["name"],
@@ -159,7 +159,7 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
         if albums := data.get("topalbums"):
             return Responses.Albums(
-                data=list(
+                albums=list(
                     map(
                         lambda album: Album(
                             artist=album["artist"]["name"],
@@ -205,7 +205,7 @@ class LastFMUser:
 
         if top_tracks := data.get("toptracks"):
             return Responses.Tracks(
-                data=[
+                tracks=[
                     Track(
                         artist=track["artist"]["name"],
                         title=track["name"],
@@ -244,7 +244,7 @@ class LastFMUser:
 
         if top_tags := data.get("toptags"):
             return Responses.Tags(
-                data=[Tag(**tag) for tag in top_tags["tag"]],
+                tags=[Tag(**tag) for tag in top_tags["tag"]],
                 total=len(top_tags["tag"]),
             )
 
@@ -275,7 +275,7 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklyartistchart"):
             return Responses.Tracks(
-                data=list(
+                tracks=list(
                     map(
                         lambda artist: Artist(
                             name=artist["name"],
@@ -320,7 +320,7 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklyalbumchart"):
             return Responses.Albums(
-                data=list(
+                albums=list(
                     map(
                         lambda album: Album(
                             artist=album["artist"]["#text"],
@@ -367,7 +367,7 @@ class LastFMUser:
 
         if weekly_chart := data.get("weeklytrackchart"):
             return Responses.Tracks(
-                data=list(
+                tracks=list(
                     map(
                         lambda track: Track(
                             artist=track["artist"]["#text"],
