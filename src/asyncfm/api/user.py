@@ -30,7 +30,9 @@ class LastFMUser:
                 track_count=user_data.get("track_count"),
                 album_count=user_data.get("album_count"),
                 image=get_images_(user_data.get("image")),
-                registered=datetime.fromtimestamp(user_data["registered"]["unixtime"]),
+                registered=datetime.fromtimestamp(
+                    int(user_data["registered"]["unixtime"])
+                ),
                 country=user_data.get("country"),
                 gender=user_data.get("gender"),
                 url=user_data.get("url"),
@@ -274,8 +276,8 @@ class LastFMUser:
         data = await self.api._make_request(params=params)
 
         if weekly_chart := data.get("weeklyartistchart"):
-            return Responses.Tracks(
-                tracks=list(
+            return Responses.Artists(
+                artists=list(
                     map(
                         lambda artist: Artist(
                             name=artist["name"],

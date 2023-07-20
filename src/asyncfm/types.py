@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Image(BaseModel):
     small: str
     medium: str
     large: str
-    extralarge: Optional[str]
+    extralarge: Optional[str] = None
 
 
 class User(BaseModel):
@@ -28,25 +28,24 @@ class User(BaseModel):
     url: str
     type: str
 
-    class Config:
-        allow_population_by_field_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Track(BaseModel):
     artist: str
     title: str
-    album: Optional[str]
+    album: Optional[str] = None
     images: Optional[Image]
     now_playing: bool = False
-    rank: Optional[int]
-    playcount: Optional[int]
+    rank: Optional[int] = None
+    playcount: Optional[int] = None
 
 
 class Artist(BaseModel):
     name: str
-    images: Optional[Image]
+    images: Optional[Image] = None
     playcount: int
-    rank: Optional[int]
+    rank: Optional[int] = None
 
 
 class Album(BaseModel):
