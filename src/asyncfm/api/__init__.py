@@ -1,7 +1,7 @@
 import aiohttp
-from typing import Optional, Dict
-from asyncfm.api.user import LastFMUser
-from asyncfm.exceptions import get_error
+from typing import Any, Optional, Dict
+from ..api.user import LastFMUser
+from ..exceptions import get_error
 
 
 class LastFMAPI:
@@ -15,22 +15,28 @@ class LastFMAPI:
         self.session = session
 
         self.user = LastFMUser(api=self)
+        
+    async def get_session(self):
+        if self.session is None:
+            self.session = aiohttp.ClientSession()
+        return self.session
+        
+    async def __aenter__(self):
+        await self.get_session()
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session and not self.session.closed:
+            await self.session.close()
+    
+    async def _make_request(self, params: Dict[str, str]) -> Optional[Dict[str, Any]]:
+        params = {"api_key": self.api_key, "format": "json", **params}
+        session = await self.get_session()
 
-    async def _request(self, session: "aiohttp.ClientSession", params: Dict[str, str]):
         async with session.get(url=self.base_url, params=params) as response:
-            data = await response.json()
+            data: dict = await response.json()
             if response.status == 200:
                 return data
 
             error_code, error_message = data.get("error"), data.get("message")
 
             raise get_error(code=error_code)(code=error_code, message=error_message)
-
-    async def _make_request(self, params: Dict[str, str]) -> Optional[Dict]:
-        params = {"api_key": self.api_key, "format": "json", **params}
-
-        if self.session is None:
-            async with aiohttp.ClientSession() as session:
-                return await self._request(session=session, params=params)
-
-        return await self._request(session=self.session, params=params)
